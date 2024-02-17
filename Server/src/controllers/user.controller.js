@@ -3,7 +3,49 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { User } from "../models/user.model.js"
 import { uploadImagesOnCloudinary } from "../utils/fileUpload.js"
+import otpGenerator from "otp-generator";
+import { OTP } from "../models/otp.model.js"
 
+// ***************** Send OTP Controller ****************
+const sendOTP = asyncHandler(async (req, res) => {
+
+    const { email } = req.body;
+
+    const existedUser = await User.findOne({ email });
+
+    if (existedUser) {
+        throw new ApiError(409, "User with username or email already exists")
+    };
+
+
+    let otp = otpGenerator.generate(6, {
+        upperCaseAlphabets: false,
+        lowerCaseAlphabets: false,
+        specialChars: false
+    });
+    console.log("generated otp: ", otp);
+
+    const result = await OTP.findOne({ otp: otp })
+    while (result) {
+        otp = otpGenerator.generate(6, {
+            upperCaseAlphabets: false,
+            lowerCaseAlphabets: false,
+            specialChars: false
+        });
+        result = await OTP.findOne({ otp: otp });
+    };
+
+    const otpPayload = { email, otp };
+    const otpBody = await OTP.create(otpPayload);
+    console.log("OTP Body: ", otpBody);
+
+
+    return res
+        .status(201)
+        .json(
+            new ApiResponse(200, createdUser, "Send OTP Successfully")
+        );
+});
 
 // *************** User Register controller *************
 const registerUser = asyncHandler(async (req, res) => {
@@ -54,6 +96,15 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Avatar file is required!!")
     };
 
+    const recentOtp = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
+    console.log("recent OTP: ", recentOtp);
+
+    if (recentOtp.length == 0) {
+        throw new ApiError(400, "OTP not Found!")
+    } else if (otp !== recentOtp.otp) {
+        throw new ApiError(400, "Invalid OTP")
+    }
+
 
     const user = await User.create({
         fullname,
@@ -83,4 +134,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
 });
 
-export { registerUser };
+
+export {
+    registerUser,
+    sendOTP
+};
