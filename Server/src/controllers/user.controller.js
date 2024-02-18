@@ -269,7 +269,18 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 });
 
 
+// **************** Get Current User Details *************** 
+const getCurrentUserDetails = asyncHandler(async (req, res) => {
 
+    return res
+        .status(200)
+        .json(
+            200,
+            req.user,
+            "Current User Fetched successFully"
+        )
+
+});
 
 
 export {
@@ -277,5 +288,6 @@ export {
     sendOTP,
     loginUser,
     refreshAccessToken,
-    changeCurrentPassword
+    changeCurrentPassword,
+    getCurrentUserDetails
 };
