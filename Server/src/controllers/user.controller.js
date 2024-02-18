@@ -204,9 +204,52 @@ const loginUser = asyncHandler(async (req, res) => {
 
 })
 
+// ************** user Refresh Access Token generator controller ************
+const refreshAccessToken = asyncHandler(async (req, res) => {
+
+    const incommingRefreshToken = req.cookie.refeshToken;
+    if (!incommingRefreshToken) {
+        throw new ApiError(401, "UnAuthorized Request!!")
+    };
+
+    const decodedToken = jwt.verify(incommingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+    const user = await User.findById(decodedToken?._id);
+    if (!user) {
+        throw new ApiError(401, "Invalid refresh token!!!")
+    };
+
+    if (incommingRefreshToken !== user?.refreshToken) {
+        throw new ApiError(401, "Refresh Token is expird or used")
+    };
+
+    // Generate new Token 
+    const option = {
+        httpOnly: true,
+        secure: true
+    };
+
+    const { newAccessToken, newRefreshToken } = await generateAccessAndRefreshToken(user._id);
+
+    return res
+        .status(200)
+        .cookie("accessToken", newAccessToken, option)
+        .cookie("refreshToken", newRefreshToken, option)
+        .json(
+            new ApiResponse(
+                200,
+                { accessToken: newAccessToken, refreshToken: newRefreshToken },
+                "Access Token refreshed"
+            )
+        )
+
+})
+
+
 
 export {
     registerUser,
     sendOTP,
-    loginUser
+    loginUser,
+    refreshAccessToken
 };
