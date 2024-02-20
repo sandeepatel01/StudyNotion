@@ -56,8 +56,37 @@ const createSubSection = asyncHandler(async (req, res) => {
 
 });
 
+const updateSubSection = asyncHandler(async (req, res) => {
 
+    const { title, subSectionId } = req.body;
+
+    const updatedSubSection = await SubSection.findByIdAndUpdate(subSectionId)
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, updatedSubSection, "Sub Section updated successfully")
+        )
+
+});
+
+const deleteSubSection = asyncHandler(async (req, res) => {
+
+    const { subSectionId } = req.params;
+
+    await SubSection.findByIdAndDelete(subSectionId);
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, "Section deleted successfully")
+        );
+
+
+});
 
 export {
-    createSubSection
+    createSubSection,
+    updateSubSection,
+    deleteSubSection
 }
