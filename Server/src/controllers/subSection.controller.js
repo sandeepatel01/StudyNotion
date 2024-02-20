@@ -58,9 +58,31 @@ const createSubSection = asyncHandler(async (req, res) => {
 
 const updateSubSection = asyncHandler(async (req, res) => {
 
-    const { title, subSectionId } = req.body;
+    const { title, description } = req.body;
 
-    const updatedSubSection = await SubSection.findByIdAndUpdate(subSectionId)
+    const subSection = await SubSection.findById(subSection?._id);
+    if (!subSection) {
+        throw new ApiError(400, "SubSection not found")
+    };
+
+    if (title !== undefined) {
+        subSection.title = title
+    }
+
+    if (description !== undefined) {
+        subSection.description = description
+    }
+
+    if (req.files && req.files?.lecture[0]?.path !== undefined) {
+        const lectureLocalPath = req.files?.lecture[0]?.path;
+        const lecture = await uploadImagesOnCloudinary(lectureLocalPath);
+        subSection.lecture = lecture?.url
+        subSection.duration = `${lecture.duration}`
+
+    }
+
+
+    const updatedSubSection = await subSection.save()
 
     return res
         .status(200)
