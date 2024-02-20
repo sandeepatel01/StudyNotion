@@ -11,7 +11,7 @@ const subSectionSchema = new mongoose.Schema(
         duration: {
             type: String
         },
-        lectureUrl: {
+        lecture: {
             type: String
         }
 
