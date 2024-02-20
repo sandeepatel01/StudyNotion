@@ -78,9 +78,7 @@ const updateSubSection = asyncHandler(async (req, res) => {
         const lecture = await uploadImagesOnCloudinary(lectureLocalPath);
         subSection.lecture = lecture?.url
         subSection.duration = `${lecture.duration}`
-
     }
-
 
     const updatedSubSection = await subSection.save()
 
@@ -88,23 +86,33 @@ const updateSubSection = asyncHandler(async (req, res) => {
         .status(200)
         .json(
             new ApiResponse(200, updatedSubSection, "Sub Section updated successfully")
-        )
-
+        );
 });
 
 const deleteSubSection = asyncHandler(async (req, res) => {
 
-    const { subSectionId } = req.params;
+    const { subSectionId, sectionId } = req.body;
 
-    await SubSection.findByIdAndDelete(subSectionId);
+    await Section.findByIdAndUpdate(
+        sectionId,
+        {
+            $pull: {
+                subSection: subSectionId
+            }
+        },
+        { new: true }
+    );
+
+    const subSection = await SubSection.findByIdAndDelete(subSectionId);
+    if (!subSection) {
+        throw new ApiError(400, "Sub Section not found")
+    };
 
     return res
         .status(200)
         .json(
             new ApiResponse(200, "Section deleted successfully")
         );
-
-
 });
 
 export {
