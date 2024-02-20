@@ -119,7 +119,7 @@ const registerUser = asyncHandler(async (req, res) => {
     };
 
     const recentOtp = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
-    console.log("recent OTP: ", recentOtp);
+    // console.log("recent OTP: ", recentOtp);
 
     if (recentOtp.length == 0) {
         throw new ApiError(400, "OTP not Found!")
