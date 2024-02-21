@@ -2,6 +2,7 @@ import { RatingAndReview } from "../models/ratingAndReview.model.js";
 import { Course } from "../models/course.model.js";
 import { asyncHandler } from "../utils/asyncHandler";
 import { ApiError } from "../utils/ApiError";
+import mongoose from "mongoose";
 
 const createRating = asyncHandler(async (req, res) => {
 
@@ -65,3 +66,45 @@ const createRating = asyncHandler(async (req, res) => {
         );
 
 });
+
+const getAverageRating = asyncHandler(async (req, res) => {
+
+    const courseId = req.body.courseId;
+
+    const result = await RatingAndReview.aggregate([
+        {
+            $match: {
+                course: new mongoose.Schema.Types.ObjectId(courseId)
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                averageRating: { $avg: "$rating" }
+            }
+        }
+    ]);
+
+    if (result.length > 0) {
+        return res
+            .status(200)
+            .json({
+                success: true,
+                averageRating: result[0].averageRating
+            })
+    };
+
+    return res
+        .status(201)
+        .json({
+            success: true,
+            averageRating: 0,
+            message: "Average Rating is 0, no ratings given till now"
+        });
+
+})
+
+
+export {
+    createRating
+};
