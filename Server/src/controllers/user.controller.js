@@ -202,7 +202,7 @@ const loginUser = asyncHandler(async (req, res) => {
             )
         )
 
-})
+});
 
 // ************** user Refresh Access Token generator controller ************
 const refreshAccessToken = asyncHandler(async (req, res) => {
@@ -243,7 +243,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
             )
         )
 
-})
+});
 
 // ************* Change Password Controller ************** 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
