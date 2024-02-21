@@ -75,7 +75,6 @@ const createCourse = asyncHandler(async (req, res) => {
 
 });
 
-
 const getAllCourses = asyncHandler(async (req, res) => {
 
     const allCourses = await Course.find({}, {
@@ -97,9 +96,39 @@ const getAllCourses = asyncHandler(async (req, res) => {
             )
         )
 
+});
+
+const getCoursesDetails = asyncHandler(async (req, res) => {
+
+    const { courseId } = req.body;
+
+    const courseDetails = await Course.find(
+        { _id: courseId })
+        .populate(
+            {
+                path: "instructor",
+                populate: {
+                    path: "additionalDetails",
+                },
+            }
+        )
+        .populate("category")
+        .populate({
+            path: "content",
+            populate: {
+                path: "subSection",
+            },
+        })
+        .exec();
+
+    if (!courseDetails) {
+        throw new ApiError(400, `Could not find the course with ${courseId}`)
+    }
+
 })
 
 export {
     createCourse,
-    getAllCourses
+    getAllCourses,
+    getCoursesDetails
 };
