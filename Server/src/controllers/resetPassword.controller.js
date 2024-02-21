@@ -5,8 +5,6 @@ import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import bcrypt from "bcrypt";
 
-
-
 const resetPasswordToken = asyncHandler(async (rwq, res) => {
 
     const { email } = req.body;

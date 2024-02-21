@@ -35,4 +35,35 @@ const updateProfile = asyncHandler(async (req, res) => {
 
 });
 
-export { updateProfile };
+const logoutUser = asyncHandler(async (req, res) => {
+
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $unset: {
+                refreshToken: 1
+            }
+        },
+        { new: true }
+    );
+
+    const option = {
+        httpOnly: true,
+        secure: ture
+    };
+
+    return res
+        .status(200)
+        .clearCookie("accessToken", option)
+        .clearCookie("refreshToken", option)
+        .json(
+            new ApiResponse(200, {}, "user logged out !!")
+        );
+
+});
+
+
+export {
+    updateProfile,
+    logoutUser
+};
