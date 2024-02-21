@@ -62,8 +62,26 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 });
 
+// Get all Users enrolled in courses 
+const getEnrolledCourses = asyncHandler(async (req, res) => {
+
+    const user = await User.findById(user._id).populate("courses").exec()
+    if (!user) {
+        throw new ApiError(400, `Could not find the user with id: ${user}`)
+    };
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, user.courses, "Get all courses successfully")
+        )
+
+
+})
+
 
 export {
     updateProfile,
-    logoutUser
+    logoutUser,
+    getEnrolledCourses
 };
