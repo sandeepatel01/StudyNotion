@@ -1,7 +1,7 @@
 import { RatingAndReview } from "../models/ratingAndReview.model.js";
 import { Course } from "../models/course.model.js";
-import { asyncHandler } from "../utils/asyncHandler";
-import { ApiError } from "../utils/ApiError";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
 import mongoose from "mongoose";
 
 const createRating = asyncHandler(async (req, res) => {

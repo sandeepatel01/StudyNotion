@@ -1,10 +1,35 @@
 import { Router } from "express";
-import { isAdmin, isInstructor, isStudent, verifyJWT } from "../middlewares/auth.middleware";
-import { createCourse, getAllCourses, getCoursesDetails } from "../controllers/course.controller"
-import { addSection, deleteSection, updateSection } from "../controllers/section.controller";
-import { addSubSection, deleteSubSection, updateSubSection } from "../controllers/subSection.controller";
-import { categoryPageDetails, createCategory, getAllCategory } from "../controllers/category.controller";
-import { createRating, getAllRating, getAverageRating } from "../controllers/ratingAndReviews.controller"
+import {
+    isAdmin,
+    isInstructor,
+    isStudent,
+    verifyJWT
+} from "../middlewares/auth.middleware.js";
+import {
+    createCourse,
+    getAllCourses,
+    getCoursesDetails
+} from "../controllers/course.controller.js"
+import {
+    createSection,
+    deleteSection,
+    updateSection
+} from "../controllers/section.controller.js";
+import {
+    createSubSection,
+    deleteSubSection,
+    updateSubSection
+} from "../controllers/subSection.controller.js";
+import {
+    categoryPageDetails,
+    createCategory,
+    getAllCategory
+} from "../controllers/category.controller.js";
+import {
+    createRating,
+    getAllRating,
+    getAverageRating
+} from "../controllers/ratingAndReviews.controller.js"
 
 const router = Router();
 
@@ -12,11 +37,11 @@ router.route('/create-course').post(verifyJWT, isInstructor, createCourse);
 router.route('/get-all-courses').get(getAllCourses);
 router.route('/get-course-details').post(getCoursesDetails);
 
-router.route('/add-section').post(verifyJWT, isInstructor, addSection);
+router.route('/add-section').post(verifyJWT, isInstructor, createSection);
 router.route('/update-section').post(verifyJWT, isInstructor, updateSection);
 router.route('/delete-section').post(verifyJWT, isInstructor, deleteSection);
 
-router.route('/add-subSection').post(verifyJWT, isInstructor, addSubSection);
+router.route('/add-subSection').post(verifyJWT, isInstructor, createSubSection);
 router.route('/update-subSection').post(verifyJWT, isInstructor, updateSubSection);
 router.route('/delete-subSection').post(verifyJWT, isInstructor, deleteSubSection);
 

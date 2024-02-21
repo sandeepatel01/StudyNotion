@@ -1,10 +1,10 @@
-import { Course } from "../models/course.model";
+import { Course } from "../models/course.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { Category } from "../models/category.model";
+import { Category } from "../models/category.model.js";
 import { User } from "../models/user.model.js";
-import { uploadImagesOnCloudinary } from "../utils/fileUpload";
+import { uploadImagesOnCloudinary } from "../utils/fileUpload.js";
 
 
 const createCourse = asyncHandler(async (req, res) => {

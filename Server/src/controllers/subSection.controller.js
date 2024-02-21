@@ -1,7 +1,7 @@
 import { SubSection } from "../models/subSection.model.js";
-import { Section } from "../models/section.model";
+import { Section } from "../models/section.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { uploadImagesOnCloudinary } from "../utils/fileUpload";
+import { uploadImagesOnCloudinary } from "../utils/fileUpload.js";
 import { ApiError } from "../utils/ApiError.js";
 
 

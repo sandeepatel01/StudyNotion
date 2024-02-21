@@ -1,8 +1,8 @@
-import { asyncHandler } from "../utils/asyncHandler";
-import { User } from "../models/user.model";
-import { mailSender } from "../utils/MailSender";
-import { ApiError } from "../utils/ApiError";
-import { ApiResponse } from "../utils/ApiResponse";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { User } from "../models/user.model.js";
+import { mailSender } from "../utils/MailSender.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import bcrypt from "bcrypt";
 
 const resetPasswordToken = asyncHandler(async (rwq, res) => {
