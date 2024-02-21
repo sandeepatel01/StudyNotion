@@ -102,9 +102,31 @@ const getAverageRating = asyncHandler(async (req, res) => {
             message: "Average Rating is 0, no ratings given till now"
         });
 
-})
+});
+
+const getAllRating = asyncHandler(async (req, res) => {
+
+    const allReviews = await RatingAndReview.find({}).sort({ rating: "desc" })
+        .populate({
+            path: "user",
+            select: "fullname, email, avatar"
+        })
+        .populate({
+            path: "course",
+            select: "name"
+        })
+        .exec();
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, allReviews, "All reviews fetched successfully")
+        );
+});
 
 
 export {
-    createRating
+    createRating,
+    getAverageRating,
+    getAllRating
 };
