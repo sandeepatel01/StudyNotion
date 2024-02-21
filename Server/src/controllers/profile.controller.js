@@ -77,7 +77,7 @@ const getEnrolledCourses = asyncHandler(async (req, res) => {
         )
 
 
-})
+});
 
 
 export {
