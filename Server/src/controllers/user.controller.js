@@ -5,6 +5,7 @@ import { User } from "../models/user.model.js"
 import { uploadImagesOnCloudinary } from "../utils/fileUpload.js"
 import otpGenerator from "otp-generator";
 import { OTP } from "../models/otp.model.js"
+import { Profile } from "../models/profile.model.js";
 
 // create function for generate token [JWT] 
 const generateAccessAndRefreshToken = async (userId) => {
@@ -40,7 +41,7 @@ const sendOTP = asyncHandler(async (req, res) => {
     };
 
 
-    let otp = otpGenerator.generate(6, {
+    var otp = otpGenerator.generate(6, {
         upperCaseAlphabets: false,
         lowerCaseAlphabets: false,
         specialChars: false
@@ -48,6 +49,8 @@ const sendOTP = asyncHandler(async (req, res) => {
     console.log("generated otp: ", otp);
 
     const result = await OTP.findOne({ otp: otp })
+    console.log("Result", result);
+
     while (result) {
         otp = otpGenerator.generate(6, {
             upperCaseAlphabets: false,
@@ -65,7 +68,7 @@ const sendOTP = asyncHandler(async (req, res) => {
     return res
         .status(201)
         .json(
-            new ApiResponse(200, createdUser, "Send OTP Successfully")
+            new ApiResponse(200, otp, "Send OTP Successfully")
         );
 });
 
@@ -77,7 +80,7 @@ const registerUser = asyncHandler(async (req, res) => {
         username,
         email,
         password,
-        confirmPassword,
+        // confirmPassword,
         accountType,
         otp
 
@@ -87,16 +90,16 @@ const registerUser = asyncHandler(async (req, res) => {
     // console.log("email: ", email)
 
     if (
-        [fullname, username, email, password, confirmPassword, accountType, otp].some((field) =>
+        [fullname, username, email, password, accountType, otp].some((field) =>
             field?.trim() === "")
     ) {
         throw new ApiError(400, "All fields are required")
     };
 
 
-    if (password !== confirmPassword) {
-        throw new ApiError(400, "Password and confirmPassword value does not match, Please try again!")
-    }
+    // if (password !== confirmPassword) {
+    //     throw new ApiError(400, "Password and confirmPassword value does not match, Please try again!")
+    // }
 
 
     const existedUser = await User.findOne({
@@ -108,24 +111,35 @@ const registerUser = asyncHandler(async (req, res) => {
     };
 
 
-    const avatarLocalPath = await req.files?.avatar[0]?.path;
+    const avatarLocalPath = req.files?.avatar[0]?.path;
+    console.log("avatar local path: ", avatarLocalPath);
+
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar File is required")
     };
 
     const avatar = await uploadImagesOnCloudinary(avatarLocalPath);
-    if (avatar) {
+    console.log("Avatar Image:", avatar);
+
+    if (!avatar) {
         throw new ApiError(400, "Avatar file is required!!")
     };
 
     const recentOtp = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
-    // console.log("recent OTP: ", recentOtp);
+    console.log("recent OTP: ", recentOtp);
 
-    if (recentOtp.length == 0) {
+    if (recentOtp.length === 0) {
         throw new ApiError(400, "OTP not Found!")
-    } else if (otp !== recentOtp.otp) {
+    } else if (otp !== recentOtp[0].otp) {
         throw new ApiError(400, "Invalid OTP")
     }
+
+    const profileDetails = await Profile.create({
+        gender: null,
+        dateOfBirth: null,
+        about: null,
+        contactNumber: null,
+    });
 
 
     const user = await User.create({
@@ -133,14 +147,14 @@ const registerUser = asyncHandler(async (req, res) => {
         username: username.toLowerCase(),
         email,
         password,
-        confirmPassword,
-        accountType,
-        avatar: avatar.url
-
+        // confirmPassword,
+        accountType: accountType,
+        avatar: avatar?.url || "",
+        additionalDetails: profileDetails?._id
     });
 
     const createdUser = await User.findById(user._id).select(
-        "-password confirmPassword refreshToken"
+        "-password  refreshToken"
     )
 
     if (!createdUser) {

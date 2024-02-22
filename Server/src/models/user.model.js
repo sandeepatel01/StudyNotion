@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
             trim: true,
             index: true
         },
-        usernmane: {
+        username: {
             type: String,
             required: true,
             trim: true,
@@ -26,10 +26,10 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Password is required']
         },
-        corfirmPassword: {
-            type: String,
-            required: [true, 'Password is required']
-        },
+        // confirmPassword: {
+        //     type: String,
+        //     required: [true, 'Password is required']
+        // },
         accountType: {
             type: String,
             required: true,
