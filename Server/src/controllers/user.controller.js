@@ -7,6 +7,7 @@ import otpGenerator from "otp-generator";
 import { OTP } from "../models/otp.model.js"
 import { Profile } from "../models/profile.model.js";
 
+
 // create function for generate token [JWT] 
 const generateAccessAndRefreshToken = async (userId) => {
     try {
@@ -28,6 +29,7 @@ const generateAccessAndRefreshToken = async (userId) => {
         )
     }
 }
+
 
 // ***************** Send OTP Controller ****************
 const sendOTP = asyncHandler(async (req, res) => {
@@ -71,6 +73,7 @@ const sendOTP = asyncHandler(async (req, res) => {
             new ApiResponse(200, otp, "Send OTP Successfully")
         );
 });
+
 
 // *************** User Register controller *************
 const registerUser = asyncHandler(async (req, res) => {
@@ -170,6 +173,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 });
 
+
 // ************ User Login Controller ************** 
 const loginUser = asyncHandler(async (req, res) => {
 
@@ -218,6 +222,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
 });
 
+
 // ************** user Refresh Access Token generator controller ************
 const refreshAccessToken = asyncHandler(async (req, res) => {
 
@@ -259,28 +264,29 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 });
 
+
 // ************* Change Password Controller ************** 
-const changeCurrentPassword = asyncHandler(async (req, res) => {
+// const changeCurrentPassword = asyncHandler(async (req, res) => {
 
-    const { oldPassword, newPassword } = req.body;
+//     const { oldPassword, newPassword } = req.body;
 
-    const user = await User.findById(user?._id);
-    const isPasswordCorrect = await isPasswordCorrect(oldPassword);
+//     const user = await User.findById(user?._id);
+//     const isPasswordCorrect = await isPasswordCorrect(oldPassword);
 
-    if (!isPasswordCorrect) {
-        throw new ApiError(400, "Invalid old pawword")
-    }
+//     if (!isPasswordCorrect) {
+//         throw new ApiError(400, "Invalid old pawword")
+//     }
 
-    user.password = newPassword;
-    await user.save({ validateBeforeSave: false });
+//     user.password = newPassword;
+//     await user.save({ validateBeforeSave: false });
 
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(200, {}, "Password Change Succcessfully")
-        )
+//     return res
+//         .status(200)
+//         .json(
+//             new ApiResponse(200, {}, "Password Change Succcessfully")
+//         )
 
-});
+// });
 
 
 // **************** Get Current User Details *************** 
@@ -295,6 +301,7 @@ const getCurrentUserDetails = asyncHandler(async (req, res) => {
         )
 
 });
+
 
 // *************** Update User Avatar *********** 
 const updateUserAvatar = asyncHandler(async (req, res) => {
