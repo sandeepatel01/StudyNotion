@@ -1,3 +1,1 @@
-# StudyNotion 
-
-EdTech Platform [ Students & Instructor ]
+# StudyNotion Edtech Project

@@ -1,3 +1,0 @@
-# StudyNotion
-
-EdTech Platform 
